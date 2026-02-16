@@ -1,26 +1,47 @@
-# 3D Agent Office — Cyber Loft Demo
+# 2D Agent Operations Dashboard (Vite)
 
-A shareable 3D web demo built with **Vite + Three.js** featuring a tasteful blend of cyberpunk neon and warm loft materials.
+A desktop-first **2D operations cockpit** with a ruinscape/pixel-office aesthetic, built on the existing Vite stack with local mock data only.
 
-## What’s Included
+## Feature Overview
 
-- Walkable first-person camera (WASD + mouse)
-- 4 labeled agent stations with floating status cards:
-  - Agent Atlas — Systems + Routing
-  - Agent Echo — Comms + QA
-  - Agent Forge — Build + Infra
-  - Agent Nova — Research + UX
-- Central animated hologram table with rotating rings/core
-- Ambient animated elements (drifting particles, pulsing lights, neon strips)
-- Mini HUD with title + controls overlay
-- Polished lighting/fog mood and desktop-first responsive behavior
+### Landing + Core Layout
+- Dark-mode default, glass panels, pixel-grid accents, and realistic worn office-floor map styling
+- **Three-column dashboard**:
+  - Left: agent list + filters/search/sort
+  - Center: clickable 2D office scene/map + ops widgets
+  - Right: selected agent details + controls + activity logs
+
+### Agent System
+- 8 seeded agents with realistic operational metrics:
+  - status (`online`, `busy`, `error`, `offline`)
+  - current task
+  - latency
+  - queue depth
+  - success rate
+  - load
+- Click any desk/station in the office map or row in the sidebar to focus that agent
+
+### Interactions
+- Filters: **all / online / busy / error**
+- Search by agent name
+- Sort toggle: by load
+- Selected station highlight synced across map + list + details panel
+
+### Operations Widgets
+- Active incidents list
+- Job queue table
+- Throughput sparkline (inline SVG)
+- Animated alert ticker
+
+### Mock Controls (Local State Only)
+- Pause/Resume agent
+- Assign task
+- Escalate incident
+- All actions update local UI state and append activity logs (no backend)
 
 ## Tech
-
-- [Three.js](https://threejs.org/)
 - [Vite](https://vitejs.dev/)
-
-Dependencies are intentionally modest.
+- Vanilla JS + CSS
 
 ## Run Locally
 
@@ -29,39 +50,30 @@ npm install
 npm run dev
 ```
 
-Open the local URL shown by Vite (typically `http://localhost:5173`).
+Open the Vite URL (usually `http://localhost:5173`).
 
-### Build for Production
+## Build
 
 ```bash
 npm run build
 npm run preview
 ```
 
-## Controls
+## Screenshots
 
-- **Click scene**: lock pointer
-- **Mouse**: look around
-- **W/A/S/D**: move
-- **Shift**: sprint
-- **Esc**: unlock pointer
+> Add your captured images to `docs/screenshots/` and update paths below.
 
-## Screenshot Instructions
+- Dashboard overview: `docs/screenshots/dashboard-overview.png`
+- Selected agent detail view: `docs/screenshots/agent-detail.png`
+- Office map with stations: `docs/screenshots/office-map.png`
 
-### Option A (quick)
-1. Run `npm run dev`
-2. Open in browser
-3. Click scene, move to desired framing
-4. Use your OS screenshot shortcut:
-   - Linux: `PrtSc` / `Shift+PrtSc`
-   - macOS: `Cmd+Shift+4`
-   - Windows: `Win+Shift+S`
+Example markdown:
 
-### Option B (browser DevTools)
-1. Open DevTools
-2. Run Command Menu (`Ctrl/Cmd + Shift + P`)
-3. Type **screenshot**
-4. Choose **Capture screenshot** or **Capture full size screenshot**
+```md
+![Dashboard overview](docs/screenshots/dashboard-overview.png)
+![Agent detail](docs/screenshots/agent-detail.png)
+![Office map](docs/screenshots/office-map.png)
+```
 
 ## Project Structure
 
