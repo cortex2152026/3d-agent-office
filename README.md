@@ -1,47 +1,60 @@
 # 2D Agent Operations Dashboard (Vite)
 
-A desktop-first **2D operations cockpit** with a ruinscape/pixel-office aesthetic, built on the existing Vite stack with local mock data only.
+A desktop-first **2D operations cockpit** with a realistic ruinscape/pixel-office aesthetic, built on vanilla Vite + local mock data.
 
 ## Feature Overview
 
-### Landing + Core Layout
-- Dark-mode default, glass panels, pixel-grid accents, and realistic worn office-floor map styling
-- **Three-column dashboard**:
-  - Left: agent list + filters/search/sort
-  - Center: clickable 2D office scene/map + ops widgets
-  - Right: selected agent details + controls + activity logs
+### Art Direction Upgrade (Ruinscape Scene)
+- Layered center scene rebuilt as a **2D office/ruinscape composition** using pure CSS + inline SVG:
+  - floor grid
+  - broken wall slabs + columns
+  - glowing terminals
+  - cable runs + debris polygons
+- Subtle ambient motion (non-distracting):
+  - scanline drift
+  - dust motes
+  - terminal flicker
+  - conditional alert pulse near error zones
 
-### Agent System
-- 8 seeded agents with realistic operational metrics:
-  - status (`online`, `busy`, `error`, `offline`)
-  - current task
-  - latency
-  - queue depth
-  - success rate
-  - load
-- Click any desk/station in the office map or row in the sidebar to focus that agent
+### UX/Data Depth
+- New **top command bar** with global KPIs:
+  - uptime
+  - active jobs
+  - average latency
+  - incident count
+- New **incident/event timeline panel** with timestamps and event tags
+- Per-agent **latency mini trend sparkline** in details panel
+- Keyboard shortcuts modal + quick access button
 
-### Interactions
-- Filters: **all / online / busy / error**
-- Search by agent name
-- Sort toggle: by load
-- Selected station highlight synced across map + list + details panel
+### Interaction Quality
+- Smooth visual transitions for selected stations/cards
+- Toast notifications for control actions:
+  - pause/resume
+  - assign
+  - escalate
+  - sort/filter toggles
+- Persistence via localStorage:
+  - selected agent
+  - filter
+  - sort mode
+  - paused agents
 
-### Operations Widgets
-- Active incidents list
-- Job queue table
-- Throughput sparkline (inline SVG)
-- Animated alert ticker
+### Agent + Operations Panels
+- Sidebar: filters/search/sort + agent roster
+- Center: ruinscape map + incidents + throughput + job queue
+- Right: selected agent metrics, controls, logs, per-agent trend
 
-### Mock Controls (Local State Only)
-- Pause/Resume agent
-- Assign task
-- Escalate incident
-- All actions update local UI state and append activity logs (no backend)
+## Keyboard Shortcuts
+- `/` → Focus search
+- `F` → Cycle filter (`all → online → busy → error → offline`)
+- `S` → Toggle sort by load
+- `?` → Open/close shortcuts modal
+- `Esc` → Close shortcuts modal
 
 ## Tech
 - [Vite](https://vitejs.dev/)
-- Vanilla JS + CSS
+- Vanilla JavaScript (ES modules)
+- Vanilla CSS + inline SVG
 
 ## Run Locally
 
@@ -59,22 +72,6 @@ npm run build
 npm run preview
 ```
 
-## Screenshots
-
-> Add your captured images to `docs/screenshots/` and update paths below.
-
-- Dashboard overview: `docs/screenshots/dashboard-overview.png`
-- Selected agent detail view: `docs/screenshots/agent-detail.png`
-- Office map with stations: `docs/screenshots/office-map.png`
-
-Example markdown:
-
-```md
-![Dashboard overview](docs/screenshots/dashboard-overview.png)
-![Agent detail](docs/screenshots/agent-detail.png)
-![Office map](docs/screenshots/office-map.png)
-```
-
 ## Project Structure
 
 ```text
@@ -82,7 +79,10 @@ Example markdown:
 ├─ index.html
 ├─ package.json
 ├─ src/
+│  ├─ data.js
 │  ├─ main.js
-│  └─ style.css
+│  ├─ state.js
+│  ├─ style.css
+│  └─ ui.js
 └─ README.md
 ```
