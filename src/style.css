@@ -1,0 +1,84 @@
+:root {
+  color-scheme: dark;
+  --hud-bg: rgba(6, 10, 20, 0.62);
+  --hud-accent: #6df5ff;
+  --hud-warm: #ffbe73;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: radial-gradient(circle at 20% 10%, #1a2233 0%, #080a12 50%, #040509 100%);
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hud {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 10;
+  padding: 10px 12px;
+  border: 1px solid rgba(109, 245, 255, 0.35);
+  background: linear-gradient(135deg, var(--hud-bg), rgba(8, 14, 28, 0.82));
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 20px rgba(109, 245, 255, 0.12) inset;
+  max-width: min(560px, calc(100vw - 28px));
+}
+
+.hud-title {
+  color: var(--hud-accent);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-size: clamp(12px, 1.9vw, 15px);
+}
+
+.hud-sub {
+  margin-top: 6px;
+  font-size: clamp(11px, 1.7vw, 13px);
+  color: #e7f3ff;
+}
+
+.hud-controls {
+  margin-top: 5px;
+  font-size: clamp(10px, 1.6vw, 12px);
+  color: var(--hud-warm);
+}
+
+.crosshair {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9;
+  color: rgba(232, 246, 255, 0.85);
+  text-shadow: 0 0 8px rgba(109, 245, 255, 0.4);
+  font-size: 18px;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (max-width: 720px) {
+  .hud {
+    top: auto;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    max-width: none;
+  }
+}
