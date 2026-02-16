@@ -6,6 +6,10 @@ const defaults = {
   search: '',
   sortByLoad: false,
   pausedIds: [],
+  idleThresholds: {
+    softMinutes: 5,
+    hardMinutes: 15,
+  },
 };
 
 export function loadState() {
@@ -15,6 +19,10 @@ export function loadState() {
       ...defaults,
       ...parsed,
       pausedIds: Array.isArray(parsed.pausedIds) ? parsed.pausedIds : [],
+      idleThresholds: {
+        ...defaults.idleThresholds,
+        ...(parsed.idleThresholds || {}),
+      },
       showHelp: false,
       toasts: [],
       lastSelectionAt: Date.now(),
@@ -36,6 +44,10 @@ export function persistState(state) {
     search: state.search,
     sortByLoad: state.sortByLoad,
     pausedIds: [...state.pausedIds],
+    idleThresholds: {
+      softMinutes: state.idleThresholds.softMinutes,
+      hardMinutes: state.idleThresholds.hardMinutes,
+    },
   };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
 }

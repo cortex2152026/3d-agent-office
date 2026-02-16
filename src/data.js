@@ -12,6 +12,10 @@ export const agents = [
     position: { x: 14, y: 24 },
     logs: ['Heartbeat stable', 'Rerouted APAC traffic', 'No failed handoffs in last hour'],
     latencyHistory: [37, 39, 41, 38, 42, 44, 40, 42],
+    lastActivityOffsetMin: 1.2,
+    lastHeartbeatOffsetSec: 42,
+    heartbeatIntervalSec: 75,
+    heartbeatPhase: 'sync',
   },
   {
     id: 'echo',
@@ -26,6 +30,10 @@ export const agents = [
     position: { x: 33, y: 28 },
     logs: ['Flagged tone mismatch in incident #847', 'Queued compliance summary', 'Manual review in progress'],
     latencyHistory: [63, 70, 74, 79, 85, 88, 93, 89],
+    lastActivityOffsetMin: 6.4,
+    lastHeartbeatOffsetSec: 118,
+    heartbeatIntervalSec: 90,
+    heartbeatPhase: 'audit',
   },
   {
     id: 'forge',
@@ -40,6 +48,10 @@ export const agents = [
     position: { x: 55, y: 22 },
     logs: ['Rebuilt worker image v2.14', 'Watching rollback guardrail', 'CPU saturation nominal'],
     latencyHistory: [47, 50, 52, 49, 54, 56, 58, 53],
+    lastActivityOffsetMin: 3.1,
+    lastHeartbeatOffsetSec: 56,
+    heartbeatIntervalSec: 80,
+    heartbeatPhase: 'deploy',
   },
   {
     id: 'nova',
@@ -54,6 +66,10 @@ export const agents = [
     position: { x: 76, y: 25 },
     logs: ['Last seen 11m ago', 'Nightly memory archive complete', 'No active assignments'],
     latencyHistory: [0, 0, 8, 0, 0, 0, 0, 0],
+    lastActivityOffsetMin: 21.4,
+    lastHeartbeatOffsetSec: 640,
+    heartbeatIntervalSec: 120,
+    heartbeatPhase: 'sleep',
   },
   {
     id: 'rift',
@@ -68,6 +84,10 @@ export const agents = [
     position: { x: 21, y: 64 },
     logs: ['Socket timeout on node 4', 'Retry budget exceeded', 'Escalation recommended'],
     latencyHistory: [132, 149, 161, 188, 210, 228, 217, 221],
+    lastActivityOffsetMin: 11.2,
+    lastHeartbeatOffsetSec: 248,
+    heartbeatIntervalSec: 90,
+    heartbeatPhase: 'triage',
   },
   {
     id: 'lumen',
@@ -82,6 +102,10 @@ export const agents = [
     position: { x: 39, y: 60 },
     logs: ['Generated 3 prototype variants', 'A/B sweep 62% complete', 'Insights queued for review'],
     latencyHistory: [54, 58, 64, 69, 73, 70, 75, 71],
+    lastActivityOffsetMin: 4.6,
+    lastHeartbeatOffsetSec: 88,
+    heartbeatIntervalSec: 75,
+    heartbeatPhase: 'analysis',
   },
   {
     id: 'quill',
@@ -96,6 +120,10 @@ export const agents = [
     position: { x: 58, y: 58 },
     logs: ['Generated executive digest', 'Tagged 14 policy updates', 'Awaiting publish approval'],
     latencyHistory: [28, 31, 33, 35, 32, 37, 34, 34],
+    lastActivityOffsetMin: 2.2,
+    lastHeartbeatOffsetSec: 35,
+    heartbeatIntervalSec: 70,
+    heartbeatPhase: 'scribe',
   },
   {
     id: 'warden',
@@ -110,6 +138,10 @@ export const agents = [
     position: { x: 79, y: 61 },
     logs: ['Revoked stale token set', 'MFA challenge refresh sent', 'Privilege drift scan running'],
     latencyHistory: [49, 55, 57, 62, 66, 69, 67, 64],
+    lastActivityOffsetMin: 5.3,
+    lastHeartbeatOffsetSec: 104,
+    heartbeatIntervalSec: 80,
+    heartbeatPhase: 'security',
   },
 ];
 

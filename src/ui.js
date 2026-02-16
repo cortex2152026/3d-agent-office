@@ -23,7 +23,7 @@ function kpiBlock(label, value, sub = '') {
   return `<article class="kpi"><p>${label}</p><strong>${value}</strong>${sub ? `<small>${sub}</small>` : ''}</article>`;
 }
 
-export function renderApp({ app, state, selected, agentList, agents, incidents, jobQueue, alerts, throughput, timelineEvents, kpis }) {
+export function renderApp({ app, state, selected, agentList, agents, incidents, jobQueue, alerts, throughput, timelineEvents, heartbeatTimeline, idleStatus, kpis }) {
   const throughputPath = sparklinePath(throughput, 320, 92);
   const latencyPath = sparklinePath(selected.latencyHistory, 260, 70, 4);
 
@@ -35,12 +35,21 @@ export function renderApp({ app, state, selected, agentList, agents, incidents, 
           <h1>2D Agent Operations Dashboard</h1>
         </div>
         <section class="kpis" aria-label="Global KPIs">
+          ${kpiBlock('All agents live?', kpis.allLive ? 'Yes' : 'No', kpis.allLiveDetail)}
           ${kpiBlock('Uptime', kpis.uptime, 'stability window')}
           ${kpiBlock('Active Jobs', kpis.activeJobs, `${kpis.busyAgents} agents engaged`) }
           ${kpiBlock('Avg Latency', `${kpis.avgLatency}ms`, 'online + busy agents')}
           ${kpiBlock('Incidents', kpis.incidents, `${kpis.criticalIncidents} high severity`) }
         </section>
       </header>
+
+      ${idleStatus.hasIdle ? `
+        <section class="idle-banner ${idleStatus.hasHardIdle ? 'is-critical' : ''}">
+          <strong>Idle Detected</strong>
+          <span>${idleStatus.hardCount} hard idle · ${idleStatus.count} agents beyond threshold</span>
+          <span class="idle-banner__meta">Review presence bars or nudge from details panel.</span>
+        </section>
+      ` : ''}
 
       <header class="topbar glass">
         <div class="ticker" aria-label="alerts ticker">
@@ -59,15 +68,36 @@ export function renderApp({ app, state, selected, agentList, agents, incidents, 
           </div>
           <input class="search" id="searchInput" value="${state.search}" placeholder="Search agent name... (/)">
           <button class="sort-btn ${state.sortByLoad ? 'is-active' : ''}" id="sortBtn">Sort by load ${state.sortByLoad ? '↓' : ''} (S)</button>
+          <div class="idle-settings">
+            <h3>Idle thresholds</h3>
+            <div class="threshold-row">
+              <label>Soft (min)
+                <input type="number" id="softThreshold" min="1" max="60" value="${state.idleThresholds.softMinutes}">
+              </label>
+              <label>Hard (min)
+                <input type="number" id="hardThreshold" min="2" max="120" value="${state.idleThresholds.hardMinutes}">
+              </label>
+            </div>
+            <p>Soft idle triggers monitoring, hard idle escalates alerts.</p>
+          </div>
           <ul class="agent-list">
             ${agentList
               .map(
                 (agent) => `
                   <li>
-                    <button class="agent-item ${agent.id === selected.id ? 'is-selected' : ''}" data-agent-id="${agent.id}">
+                    <button class="agent-item ${agent.id === selected.id ? 'is-selected' : ''} idle-${agent.idleState}" data-agent-id="${agent.id}">
                       <div>
                         <strong>${agent.name}</strong>
                         <p>${agent.role}</p>
+                        <div class="presence-meta">
+                          <span>Last ${agent.lastActivityLabel} UTC</span>
+                          <span>HB ${agent.heartbeatAgeLabel}</span>
+                          <span>Phase ${agent.heartbeatPhase}</span>
+                          <span>Next ${agent.nextPingLabel}</span>
+                        </div>
+                        <div class="presence-bar">
+                          <span style="width:${Math.round(agent.presencePct * 100)}%"></span>
+                        </div>
                       </div>
                       <div class="agent-mini">
                         <span class="${statusClass(agent.status)}">${agent.status}</span>
@@ -117,7 +147,7 @@ export function renderApp({ app, state, selected, agentList, agents, incidents, 
               .map(
                 (agent) => `
                   <button
-                    class="desk ${agent.id === selected.id ? 'is-selected' : ''}"
+                    class="desk ${agent.id === selected.id ? 'is-selected' : ''} idle-${agent.idleState}"
                     style="left:${agent.position.x}%;top:${agent.position.y}%;"
                     data-agent-id="${agent.id}"
                     aria-label="${agent.name} station"
@@ -174,6 +204,20 @@ export function renderApp({ app, state, selected, agentList, agents, incidents, 
               <div><dt>Queue depth</dt><dd>${selected.queueDepth}</dd></div>
               <div><dt>Success rate</dt><dd>${selected.successRate}%</dd></div>
             </dl>
+            <div class="presence-card idle-${selected.idleState}">
+              <div>
+                <h4>Presence</h4>
+                <p>Last activity: ${selected.lastActivityLabel} UTC (${selected.idleAgeLabel} ago)</p>
+              </div>
+              <div class="presence-bar">
+                <span style="width:${Math.round(selected.presencePct * 100)}%"></span>
+              </div>
+              <div class="presence-grid">
+                <div><span>Heartbeat age</span><strong>${selected.heartbeatAgeLabel}</strong></div>
+                <div><span>Phase</span><strong>${selected.heartbeatPhase}</strong></div>
+                <div><span>Next ping ETA</span><strong>${selected.nextPingLabel}</strong></div>
+              </div>
+            </div>
             <div class="mini-trend">
               <span>Latency trend</span>
               <svg viewBox="0 0 260 70" role="img" aria-label="${selected.name} latency trend">
@@ -185,6 +229,8 @@ export function renderApp({ app, state, selected, agentList, agents, incidents, 
           <div class="action-row">
             <button id="pauseBtn">${state.pausedIds.has(selected.id) ? 'Resume agent' : 'Pause agent'}</button>
             <button id="assignBtn">Assign task</button>
+            <button id="nudgeBtn">Nudge agent</button>
+            <button id="restartBtn">Restart run</button>
             <button id="escalateBtn" class="danger">Escalate incident</button>
           </div>
 
@@ -200,6 +246,22 @@ export function renderApp({ app, state, selected, agentList, agents, incidents, 
         <ul>
           ${timelineEvents
             .map((event) => `<li><time>${event.ts}</time><span class="event-tag event-tag--${event.type}">${event.type}</span><p>${event.text}</p></li>`)
+            .join('')}
+        </ul>
+      </section>
+
+      <section class="panel glass timeline-panel heartbeat-panel">
+        <h2>Heartbeat Timeline</h2>
+        <ul>
+          ${heartbeatTimeline
+            .map(
+              (event) => `
+                <li>
+                  <time>${event.ts}</time>
+                  <span class="event-tag event-tag--${event.idleState === 'hard' ? 'incident' : event.idleState === 'soft' ? 'review' : 'system'}">${event.phase}</span>
+                  <p>${event.agent} • heartbeat age ${event.age}</p>
+                </li>`
+            )
             .join('')}
         </ul>
       </section>
